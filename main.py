@@ -62,96 +62,213 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    if ('nigga') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} - I'll mangle you next time")
 
-    if ('nigger') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} - I'll mangle you next time")
+banned_words = [
+    "nigger", "n1gger", "ni99er", "nigga", "n1gga", "ni99a",
+    "faggot", "f4ggot", "fa99ot", "fag", "f4g", "fa9",
+    "retard", "r3tard", "reeetard", "ret@rd", "r3t@rd",
+    "tranny", "tr4nny", "tr4nni", "trannie",
+    "kike", "kyke", "k1ke", "ki1ke",
+    "spic", "sp1c", "sp!c",
+    "coon", "k00n", "c00n",
+    "chink", "ch1nk", "ch!nk",
+    "gook", "g00k", "g0ok",
+    "wetback", "w3tback", "wetb4ck",
+    "towelhead", "t0welhead", "towelh3ad",
+    "sandnigger", "sandni99er", "sandn1gger",
+    "rape", "r4pe", "raape", "rap3",
+    "rapist", "r4pist", "rap1st",
+    "molest", "molester", "m0lest", "m0lester",
+    "pedophile", "pedo", "paedo", "p3do", "ped0",
+    "groom", "groomer", "gr00m", "gr00mer",
+    "incest", "inc3st",
+    "bestiality", "b3stiality",
+    "zoophilia", "zo0philia",
+    "kill", "k1ll", "ki1l", "k!ll",
+    "murder", "murdr", "murda",
+    "suicide", "su1cide", "suiside",
+    "kms", "killmyself", "k1llmyself",
+    "kys", "k1llyourself", "killurself",
+    "selfharm", "self-harm", "s3lfharm",
+    "cutting", "cutmyself", "slitwrists",
+    "die", "d13", "d1e",
+    "dead", "d3ad", "d34d",
+    "terrorist", "t3rrorist", "terr0rist",
+    "bomb", "b0mb", "b0m8",
+    "explode", "expl0de", "explod3",
+    "shoot", "sh00t", "sh0ot",
+    "schoolshoot", "schoolsh00t",
+    "gun", "gunn", "guhn",
+    "nazis", "nazi", "n4zi",
+    "hitler", "h1tler", "h!tler",
+    "holocaust", "hol0caust",
+    "gaschamber", "g4schamber",
+    "lynch", "l1nch", "l!nch",
+    "hang", "h4ng", "h@ng",
+    "slut", "slutt", "slvt",
+    "whore", "wh0re", "whor3",
+    "hoe", "h03", "h0e",
+    "cumdumpster", "cumdumper",
+    "rapeplay", "forcedsex",
+    "nonconsensual", "noncon", "cnc",
+    "gore", "g0re", "g0r3",
+    "dismember", "dism3mb3r",
+    "decapitate", "dec4pitate",
+    "behead", "b3head",
+    "necrophilia", "n3crophilia",
+    "snuff", "snuf", "snuhff",
+    "blood", "bl00d", "bl0od",
+    "cannibal", "c4nnibal",
+    "cannibalism", "c4nnibalism",
+    "childporn", "cp", "c.p.", "c\\*p",
+    "lolicon", "lolic0n", "l0licon",
+    "shotacon", "sh0tacon",
+    "nsfw", "n.s.f.w", "nsf\\*w",
+    "lewd", "lewds", "lewdd",
+    "onlyfans", "0nlyfans", "onlyfanz",
+    "porn", "pr0n", "p0rn",
+    "porno", "p0rn0",
+    "nudes", "n00des", "nudez",
+    "dickpic", "d1ckpic", "dicpic",
+    "boobpic", "b00bpic", "boobpick",
+    "anal", "4nal", "an@l",
+    "deepthroat", "deepthr0at",
+    "69ing", "sixtynine",
+    "blowjob", "bl0wjob", "blowj0b",
+    "handjob", "handj0b", "h4ndjob",
+    "cum", "cumm", "cvm",
+    "jizz", "j1zz", "j!zz",
+    "masturbate", "masturb8", "mast3rbate",
+    "fap", "f@p", "phap",
+    "orgasm", "0rgasm", "0rgazm",
+    "moan", "m0an", "mo@n",
+    "clit", "cl1t", "cl!t",
+    "pussy", "pussi", "pussie", "p\\*ssy",
+    "vagina", "v4gina", "v@gina",
+    "cock", "c0ck", "c\\*ck",
+    "dick", "d1ck", "d!ck",
+    "penis", "p3nis", "pen1s",
+    "ballsack", "b4llsack",
+    "testicles", "t3sticles",
+    "butthole", "buttho1e",
+    "asshole", "assh0le", "a55hole",
+    "rimjob", "r1mjob", "rimj0b",
+    "suck", "sux", "suckk",
+    "lick", "l1ck", "lickk",
+    "thot", "th0t", "th0ttie",
+    "camgirl", "camboi", "camboy",
+    "escort", "esc0rt", "esc0rts",
+    "prostitute", "pr0stitute", "pr0st1tute",
+    "pimp", "p1mp", "p!mp",
+    "drug", "drugs", "drvg",
+    "weed", "we3d", "w33d",
+    "cocaine", "c0caine", "c0k3",
+    "crack", "cr4ck", "krack",
+    "meth", "m3th", "methh",
+    "heroin", "her0in", "her0ine",
+    "lsd", "acidtrip",
+    "shrooms", "shr00ms", "shro0ms",
+    "ecstasy", "3cstasy", "exstacy",
+    "ketamine", "k3tamine", "k3ta",
+    "fentanyl", "f3ntanyl", "fentanil",
+    "overdose", "0verdose", "0verd0se",
+    "dealer", "d3aler", "de4ler",
+    "cartel", "c4rtel", "cart3l",
+    "smuggle", "smuggler", "smuggl3"
+    "goon", "gooning", "edging", "edgeplay", "ruinedorgasm",
+    "futa", "futanari", "yiff", "yiffy", "furryfucking",
+    "creampie", "creampies", "bukkake", "bukkakke",
+    "facial", "cumshot", "cumslut", "cumdump", "cumdumpster",
+    "gloryhole", "gloryholes", "gangbang", "gangbanged",
+    "dp", "doublepenetration", "triplepenetration",
+    "spitroast", "spitroasting",
+    "anal", "deepthroat", "deepthroating",
+    "throatfuck", "throatfucking", "facefuck",
+    "felch", "felching",
+    "snowballing", "snowball",
+    "rimjob", "rimming", "analingus",
+    "prolapse", "rosebud", "analprolapse",
+    "breeding", "breeder", "breedme",
+    "breedingkink", "breedingfetish",
+    "ddlg", "daddydom", "littlespace",
+    "ageplay", "abdl", "adultbaby",
+    "mommydom", "mdlb", "cgl",
+    "cockvore", "vore", "unbirth",
+    "tentacle", "tentaclesex",
+    "pegging", "pegged", "strapon", "strap-ons",
+    "pissing", "watersports", "goldenshower",
+    "scat", "scatplay", "coprophilia",
+    "vomitplay", "emeto", "emetoophilia",
+    "enema", "enemas", "enemaplay",
+    "fisting", "fisted", "doublefisting",
+    "sounding", "soundplay",
+    "cbt", "cockandballtorture",
+    "humiliation", "degradation", "degrading",
+    "slutplay", "sluttraining", "whoretraining",
+    "findom", "financialdomination",
+    "chastity", "chastitycage",
+    "keyholder", "cuckold", "cuck",
+    "cuckquean", "hotwife",
+    "bull", "bulls", "breederbull",
+    "alpha", "betaorbiter",
+    "bdsm", "bondage", "shibari",
+    "hogtie", "hogtied", "ropebondage",
+    "sensorydeprivation", "forcedorgasm",
+    "forcedbi", "hypnokink", "hypnosmut",
+    "hypnofetish", "hypno",
+    "mindcontrol", "brainwash",
+    "consensualnonconsent", "cnc", "ravish",
+    "ravishment", "noncon", "non-consensual",
+    "rapeplay", "rapefantasy", "forceplay",
+    "slave", "master", "mistress",
+    "dominatrix", "dominance", "submission",
+    "submissive", "sub", "dom", "domme",
+    "petplay", "puppyplay", "kittenplay",
+    "collar", "leash", "kennel",
+    "breathplay", "asphyxiation",
+    "choking", "chokeplay",
+    "sensualhumiliation", "sexslave",
+    "porn", "pr0n", "pornhub",
+    "onlyfans", "onlyfan", "onlyfanz",
+    "lewds", "lewd", "lewded",
+    "nsfw", "n.s.f.w", "nsf\\*w"
+]
 
-    if ('negro') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} - I'll mangle you next time")
 
-    if ("syb") in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} - you sybau")
+# Pre-compile a regex
+banned_pattern = re.compile(r"|".join(re.escape(word) for word in banned_words), re.IGNORECASE)
 
-    if ('dick') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} - I'll mangle you next time")
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def removebadword(ctx, *, word):
+    if word.lower() in banned_words:
+        banned_words.remove(word.lower())
+        await ctx.send(f"✅ Removed '{word}' from banned words.")
+    else:
+        await ctx.send("❌ That word isn't in the list.")
 
-    if ('boobs') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} - I'll mangle you next time")
-
-    if ('S.Y.B') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} - you sybau")
-
-    if ('s.y.b') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} - you sybau")
-
-    if ('pussy') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} - I'll mangle you next time")
-
-    if ('cum') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} - I'll mangle you next time")
-
-    if ('prout') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} - https://tenor.com/view/job-application-gif-3515684064707868771")
-
-    if ('blud') in message.content.lower():
-        await message.channel.send
-
-    if ( "i think you dont have to be lazy or a monster just be a fucking egoist to be the hero of the match and get the victory") in message.content.lower():
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def addbadword(ctx, *, word):
+    if word.lower() not in banned_words:
+        banned_words.append(word.lower())
+        await ctx.send(f"✅ Added '{word}' to banned words.")
+    else:
+        await ctx.send("❌ That word is already banned.")
+        
+@bot.event
+async def on_message(message):
+    if message.author.bot:
         return
 
-    if ('sharky') in message.content.lower():
-        await message.reply(f"https://tenor.com/view/ranze-kurona-kurona-blue-lock-chomp-gif-12837692651345335610")
+    if banned_pattern.search(message.content):
+        try:
+            await message.delete()
+            await message.channel.send(
+                f"{message.author.mention}, I'll mangle you")
+        except discord.Forbidden:
+            print("❌ Cannot delete message in this channel.")
 
-    if ('kyun') in message.content.lower():
-        await message.reply(
-                f"https://tenor.com/view/baro-%D1%87%D0%BC%D0%BE%D0%BA-%D0%B1%D0%B0%D1%80%D0%BE-gif-340350785571726614")
-
-    if ('monster') in message.content.lower():
-        await message.reply(f"https://tenor.com/view/blue-lock-bachira-meguru-monster-gif-5501619717696678795")
-
-    if ('chameleon') in message.content.lower():
-        await message.reply(
-                f"https://tenor.com/view/reo-mikage-reo-reo-copying-copy-cat-aiku-save-gif-17847097592695751533")
-
-    if ('lazy') in message.content.lower():
-        await message.reply(f"https://tenor.com/view/blue-lock-reo-mikage-blue-lock-gif-14806395538056758512")
-
-    if ('egoist') in message.content.lower():
-        await message.reply(
-                f"https://tenor.com/view/i-want-to-win-with-my-own-goal-isagi-blue-lock-ego-gif-27503753")
-
-    if ('hero') in message.content.lower():
-        await message.reply(
-                f" https://tenor.com/view/isagi-blue-lock-celebration-blue-lock-celebration-isagi-final-goal-gif-16352392666778630494")
-
-    if ('victory') in message.content.lower():
-        await message.reply(
-                f"https://tenor.com/view/isagi-yoichi-celebration-bluelock-bluelock-u20-isagi-celebration-gif-12681972194574580305")
-
-    if ("king") in message.content.lower():
-        await message.reply(
-                f"https://tenor.com/view/blue-lock-barou-angry-livid-king-barou-gif-2875010023789494362")
-
-    if ('kys') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} https://tenor.com/view/ltg-gif-40123618314459872")
-
-    if ('k.y') in message.content.lower():
-        await message.delete()
-        await message.channel.send(f"{message.author.mention} https://tenor.com/view/ltg-gif-40123618314459872")
 
     await bot.process_commands(message)
 
@@ -345,7 +462,7 @@ class LeaderboardView(View):
 
 
 @bot.command()
-@commands.has_role("Tryout Hoster")
+@commands.has_role("Tryout_Hoster")
 async def setstats(ctx, member: discord.Member, dribble: int, iq: int, pas: int, shoot: int, offense: int, defense: int):
     data = load_stats()
     uid = str(member.id)
